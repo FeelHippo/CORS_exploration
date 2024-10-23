@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<note>
+  <to>The Client</to>
+  <from>The Server</from>
+  <heading>CORS request</heading>
+  <body>The request is made from a host different than the server. For instance, this script runs the server on port 3001, whereas the client sends his request from 3000. The client sends an additional header called "Origin", containing the client's host (3000). The server aknowledges that with the "Access-Control-Allow-Origin" header set to "*". This pattern of the Origin and Access-Control-Allow-Origin headers is the simplest use of the access control protocol. If the server wished to restrict access to the resource to requests only from certain hosts, they would specify the hosts in the same header i.e. "Access-Control-Allow-Origin: https://foo.example"</body>
+</note>
