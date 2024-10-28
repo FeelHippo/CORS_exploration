@@ -12,6 +12,8 @@ NODE_PORT=3001 pm2 --name Node start server.js -- start &
 pm2 list
 pm2 save
 
+echo
+echo
 echo "Make a simple request..."
 curl --location 'localhost:3001/simple-request' \
 --header 'Content-Type: multipart/form-data' \
@@ -21,10 +23,43 @@ curl --location 'localhost:3001/simple-request' \
 --form 'accepted_manual_headers="Accept, Accept-Language, Content-Language, Content-Type, Range"' \
 --form 'accepted_type_subtype="application/x-www-form-urlencoded, multipart/form-data, text/plain"'
 
+echo
+echo
 echo "Make CORS request..."
 curl --location 'localhost:3001/basic-client-server' \
 --header 'Content-Type: multipart/form-data' \
 --header 'Origin: localhost:3000'
 
+echo
+echo
+echo "Make preflighted request..."
+curl --location --request OPTIONS 'localhost:3001/preflight-request' \
+--header 'Host: localhost:3000' \
+--header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' \
+--header 'Accept-Language: en-us,en;q=0.5' \
+--header 'Accept-Encoding: gzip,deflate' \
+--header 'Origin: localhost:3000' \
+--header 'Access-Control-Request-Method: POST' \
+--header 'Access-Control-Request-Headers: content-type,x-pingother' \
+--header 'Warning: A non-standard HTTP X-PINGOTHER request header is set. Such headers are not part of HTTP/1.1, but are generally useful to web applications. Since the request uses a Content-Type of text/xml, and since a custom header is set, this request is preflighted'
+
+echo
+echo
+echo "Once the preflight request is complete, the main request is sent..."
+curl --location 'localhost:3001/main-request-post-preflight' \
+--header 'Content-Type: multipart/form-data' \
+--header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' \
+--header 'Accept-Encoding: gzip,deflate' \
+--header 'X-PINGOTHER: pingpong' \
+--header 'Content-Type: text/xml; charset=UTF-8' \
+--header 'Referer: https://foo.example/examples/preflightInvocation.html' \
+--header 'Pragma: no-cache' \
+--header 'Cache-Control: no-cache' \
+--header 'Origin: localhost:3000' \
+--data '"<person><name>Arun</name></person>"'
+
+
+echo
+echo
 echo "End of script: kill-port"
 pm2 stop all
